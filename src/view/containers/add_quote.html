@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>أضف قولاً</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+    
+    <input type="text" class="input" id="token" name="token" placeholder="Enter your token here" value="Herrro2324">
+    
+    <form class="form" action="">    
+        <h3>أضف قولا</h3>
+        <input type="text" id="content" class="input" name="content" placeholder="Enter quote here">
+        <input list="sourceList" id="source" class="input" name="source" placeholder="Enter source/author here">
+        <datalist id="sourceList"></datalist>
+        <input list="topicList" id="topic" class="input" name="topic" placeholder="Enter topic here">
+        <datalist id="topicList"></datalist>
+        
+        <input type="submit" value="أضف">
+        <input type="hidden" id="type" name="type" value="addQuote">
+    </form>
+    <form class="form" action="">
+            <h3>أضف مصدرا</h3>
+        <input type="text" id="source" class="input" name="source" placeholder="Enter new source here">
+        
+        <input type="submit" value="أضف">
+        <input type="hidden" id="type" name="type" value="addSource">
+    </form>
+    <form class="form" action="">
+        <h3>أضف موضوعا</h3>
+        <input type="text" id="topic" class="input" name="topic" placeholder="Enter new topic here">
+        <input type="submit" value="أضف">
+        <input type="hidden" id="type" name="type" value="addTopic">
+    </form>
+</body>
+</html>

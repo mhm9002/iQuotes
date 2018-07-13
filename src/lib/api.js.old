@@ -1,0 +1,31 @@
+class Api {
+    static ApiToken = "quotes-for-life-21234343dfrf23w";  //"kpS7JwowMbmsh6ZFAbCRAFdzkfS8p1EYgggjsnC99YQvV8spp3";
+    static ApiUrl = "http://10.0.2.2/api/q/api.php" //"https://andruxnet-random-famous-quotes.p.mashape.com/";
+    
+    static post (param) {
+        var query = '?'
+
+        for (var key in param){
+            query += key+'='+param[key]+'&'
+        }
+
+        return fetch(this.ApiUrl+query,{
+            method: 'POST',
+            headers: {
+                'X-Mashape-Key': this.ApiToken,
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'   
+            }
+        })
+        .then((res)=>res.json())
+        .then((resJSON)=>{ return resJSON;})
+        .catch((err)=>err);
+    }
+
+    static get (param) {
+        return null;
+    }
+}
+
+//module.exports = Api;
+export default Api;

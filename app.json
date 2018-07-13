@@ -1,0 +1,15 @@
+{
+	"expo": {
+		"name": "iQuotes",
+		"icon": "./src/assets/appLogo.png",
+		"version": "1.0.0",
+		"slug": "iquotes",
+		"sdkVersion": "27.0.0",
+		"ios": {
+			"bundleIdentifier": "com.najjaroo.iquotes"
+		},
+		"android": {
+			"package": "com.najjaroo.iquotes"
+		}
+	}
+}

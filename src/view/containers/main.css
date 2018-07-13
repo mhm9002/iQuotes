@@ -1,0 +1,14 @@
+body {
+    direction: rtl;
+}
+
+.form {
+    display: block;
+    border: 1px solid #000;
+    width: 60%;
+    margin: auto;
+    padding: 20px;
+}
+.input {
+    margin : auto;
+}

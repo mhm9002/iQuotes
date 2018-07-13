@@ -1,0 +1,15 @@
+export const CONSTANTS = {
+    APP_NAME: 'القول الطيب',
+    LIKE_TEXT: 'إعجاب',
+    DOWNLOAD_TEXT: 'تنزيل',
+    SHARE_TEXT: 'مشاركة',
+    REPORT_TEXT: 'تبليغ',
+    BACKGROUND_TEXT: 'صورة جديدة',
+    REPORT_PHRASE: 'إن مساعدتك في التبليغ عن الأخطاء الواردة في محتوى البرنامج هي خطوة مهمة لنا، بإمكانك توضيح الأخطاء في المقولة المحددة، ووتعبئة البريد الإلكتروني (إختياري) للتواصل معك في حال القيام بالخطوات المناسبة',
+    CANCEL_TEXT:'إلغاء',
+    quotePage: 'أقوال مأثورة',
+    searchPage:'بحث',
+    characterPage:'الشخصيات',
+    topicPage: 'المواضيع',
+    settingPage: 'الإعدادات',
+}
