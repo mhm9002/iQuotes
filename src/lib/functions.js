@@ -1,4 +1,5 @@
 import { AsyncStorage } from "react-native";
+import { Permissions, Notifications } from "expo";
 
 function getRandomColor() {
 	var h = Math.floor(Math.random() * 360);
@@ -14,10 +15,9 @@ function getRandomColor() {
 getStoredData = async key => {
 	try {
 		//await AsyncStorage.clear();
-		return AsyncStorage.getItem(key).then (res=>{
+		return AsyncStorage.getItem(key).then(res => {
 			return res;
-		})
-		
+		});
 	} catch (error) {
 		console.log("Error: ", error);
 		//alert(error);
@@ -46,9 +46,47 @@ getCameraRollAsync = async () => {
 	}
 };
 
+requestNotificationPermission = async () => {
+	let { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+	if (status !== "granted") {
+		await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+		let { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+		if (status !== "granted") {
+			return false;
+		}
+	}
+
+	return true;
+};
+
+sendNotification = async (msg, icon) => {
+	let permit = await requestNotificationPermission();
+	if (permit == true) {
+		const localnotification = {
+			title: "iQuotes App",
+			body: msg,
+			android: {
+				sound: true,
+				icon: icon
+			},
+			ios: {
+				sound: true
+			}
+		};
+
+		await Notifications.presentLocalNotificationAsync(localnotification);
+	}
+};
+
+setNotification = async setting => {};
+
 module.exports = {
 	getRandomColor,
 	getStoredData,
 	setStoredData,
-	getCameraRollAsync
+	getCameraRollAsync,
+	sendNotification,
+	setNotification
 };

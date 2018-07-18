@@ -8,8 +8,8 @@ import { Card } from "react-native-elements";
 
 class SourceQuotes extends Component {
 	render() {
-		//alert (this.props.navigation.getParam('sID',0));
-		alert (this.props.navigation.getParam("source",0).sID);
+	
+		//alert (this.props.navigation.getParam("source",0).sID);
 		
 		return (
 			<View style={{ flex: 1 }}>
@@ -22,11 +22,13 @@ class SourceQuotes extends Component {
 					>
 						<Text>{this.props.navigation.getParam("source", 0).misc}</Text>
 					</Card>
+					<View style={{ flex: 1 }}>
 					<QuoteContainer
 						qType={"Source"}
                         qSID={this.props.navigation.getParam("source", 0).sID}
                         navigation={this.props.navigation}
 					/>
+					</View>
 				</View>
 			</View>
 		);

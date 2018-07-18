@@ -35,11 +35,11 @@ class QuoteContainer extends Component {
 			postPhotoNo={(parseInt(Math.random() * 27) + 1).toString()}
 			liked = {isLiked}
 			navigation={this.props.navigation}
-			onLike={()=>{this.onLikeQuote(item.item.qID)}}
+			onLike={async ()=>{await this.onLikeQuote(item.item.qID)}}
 			/>;
 	}
 
-	onLikeQuote=(qID) =>{
+	onLikeQuote= (qID) =>{
 		this.props.quoteLike(qID);
 	}
 

@@ -31,21 +31,21 @@ export function quoteGetBySource(sID) {
 	return dispatch => {
 		Api.post("quote", "getBySource", { sID: sID }).then(res => {
 			if (res.STATUS == "SUCCESS") {
-				if (res.RESULT.MESSAGE) {
-					dispatch({
-						type: ACTION_TYPES_QUOTE.GET_BY_SOURCE_FAILED,
-						payload: { error: res.RESULT.MESSAGE }
-					});
-				} else {
-					dispatch({
-						type: ACTION_TYPES_QUOTE.GET_BY_SOURCE_SUCCESS,
-						payload: res.RESULT
-					});
-				}
-			} else {
+				dispatch({
+					type: ACTION_TYPES_QUOTE.GET_BY_SOURCE_SUCCESS,
+					payload: res.RESULT
+				});
+			} else if (res.STATUS == "FAILED") {
+				console.log(res.RESULT.MESSAGE);
 				dispatch({
 					type: ACTION_TYPES_QUOTE.GET_BY_SOURCE_FAILED,
-					payload: { error: "failed to load post" }
+					payload: null
+				});
+			} else {
+				console.log("errorroroorr");
+				dispatch({
+					type: ACTION_TYPES_QUOTE.GET_BY_SOURCE_FAILED,
+					payload: null
 				});
 			}
 		});
@@ -56,21 +56,21 @@ export function quoteGetByTopic(tID) {
 	return dispatch => {
 		Api.post("quote", "getByTopic", { tID: tID }).then(res => {
 			if (res.STATUS == "SUCCESS") {
-				if (res.RESULT.MESSAGE) {
-					dispatch({
-						type: ACTION_TYPES_QUOTE.GET_BY_TOPIC_FAILED,
-						payload: { error: res.RESULT.MESSAGE }
-					});
-				} else {
-					dispatch({
-						type: ACTION_TYPES_QUOTE.GET_BY_TOPIC_SUCCESS,
-						payload: res.RESULT
-					});
-				}
-			} else {
+				dispatch({
+					type: ACTION_TYPES_QUOTE.GET_BY_TOPIC_SUCCESS,
+					payload: res.RESULT
+				});
+			} else if (res.STATUS == "FAILED") {
+				console.log(res.RESULT.MESSAGE);
 				dispatch({
 					type: ACTION_TYPES_QUOTE.GET_BY_TOPIC_FAILED,
-					payload: { error: "failed to load post" }
+					payload: null
+				});
+			} else {
+				console.log("errorroroorr");
+				dispatch({
+					type: ACTION_TYPES_QUOTE.GET_BY_TOPIC_FAILED,
+					payload: null
 				});
 			}
 		});
@@ -86,12 +86,12 @@ export function quoteLike(quoteID) {
 
 			isLiked = resArray.indexOf(quoteID);
 
-			if (isLiked>-1){
+			if (isLiked > -1) {
 				resArray.splice(isLiked);
 			} else {
 				resArray.push(quoteID);
 			}
-				
+
 			//alert(JSON.stringify(resArray));
 			setStoredData("Likes", JSON.stringify(resArray)).then(() => {
 				dispatch({

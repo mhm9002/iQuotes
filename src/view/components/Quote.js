@@ -18,7 +18,7 @@ import {
 import { takeSnapshotAsync } from "expo";
 import assets from "../../assets/assets";
 import { CONSTANTS } from "../../config/constants";
-import { getRandomColor, getCameraRollAsync } from "../../lib/functions";
+import { getRandomColor, getCameraRollAsync, sendNotification } from "../../lib/functions";
 import Api from "../../lib/api";
 
 class Quote extends Component {
@@ -52,7 +52,8 @@ class Quote extends Component {
 	}
 
 	_visitSource() {
-		this.props.navigation.push("subSource", { sID: this.props.item.item.sID });
+		this.props.navigation.push("subSource", 
+			{ source: this.props.item.item });
 	}
 
 	_visitTopic() {
@@ -137,6 +138,7 @@ class Quote extends Component {
 	}
 
 	download = async () => {
+		this.setState({isLoading:true});
 		let permit = await getCameraRollAsync();
 
 		if (permit == false) {
@@ -151,10 +153,12 @@ class Quote extends Component {
 
 			let saveRes = await CameraRoll.saveToCameraRoll(res, "photo");
 
-			Alert.alert("Quote saved", saveRes);
+			await sendNotification("Quote saved on this path "+saveRes,assets.images.downloadButton);
+			//Alert.alert("Quote saved", saveRes);
 			// for share you will need the below line.
 			//this.setState({ cameraRollUri: saveResult });
 		}
+		this.setState({isLoading:false});
 	};
 
 	share = () => {
@@ -281,6 +285,13 @@ class Quote extends Component {
 		}
 	};
 
+	renderOverlay(){
+		if (this.state.isLoading)
+			return (<View style={styles.overlay}/>);
+
+		return null;
+	}
+
 	render() {
 		const likeButtonColor = this.props.liked ? "rgb(255,0,0)" : "rgb(0,0,0)";
 		const quoteData = this.props.item.item;
@@ -297,115 +308,110 @@ class Quote extends Component {
 		return (
 			<View style={styles.quoteBox} onLayout={this._onLayout.bind(this)}>
 				<View
-					style={[
-						styles.overlay,
-						{
-							opacity: this.state.isLoading ? 0.2 : 1
-						}
-					]}>
-					<View
-						collapsable={false}
-						ref={view => {
-							this._quoteExport = view;
+					collapsable={false}
+					ref={view => {
+						this._quoteExport = view;
+					}}>
+					<ImageBackground
+						source={this.state.backgroundImage}
+						style={{
+							alignItems: "center",
+							justifyContent: "center",
+							height: this.state.imageHeight,
+							width: this.state.imageWidth
 						}}>
-						<ImageBackground
-							source={this.state.backgroundImage}
-							style={{
-								alignItems: "center",
-								justifyContent: "center",
-								height: this.state.imageHeight,
-								width: this.state.imageWidth
-							}}>
-							<View style={styles.quoteContent}>
-								<View style={{ flexDirection: "row", padding: 20 }}>
-									<Text style={this.state.contentStyle}>
-										"{quoteData.content}"
-									</Text>
-								</View>
-
-								<Text style={this.state.sourceStyle}>{quoteData.source}</Text>
+						<View style={styles.quoteContent}>
+							<View style={{ flexDirection: "row", padding: 20 }}>
+								<Text style={this.state.contentStyle}>
+									"{quoteData.content}"
+								</Text>
 							</View>
-							<Text style={styles.photoSource}>{sourcePhrase}</Text>
-						</ImageBackground>
-					</View>
-					<View style={styles.tagBar}>
-						<TouchableOpacity
-							style={{ borderRadius: 10, backgroundColor: getRandomColor() }}
-							onPress={() => this._visitSource()}>
-							<Text style={styles.barText}>{quoteData.source}</Text>
-						</TouchableOpacity>
 
-						<TouchableOpacity
-							style={{ borderRadius: 10, backgroundColor: getRandomColor() }}
-							onPress={() => this._visitTopic()}>
-							<Text style={styles.barText}>{quoteData.topic}</Text>
-						</TouchableOpacity>
-					</View>
-
-					<View style={styles.actionBar}>
-						<TouchableOpacity
-							style={styles.actionBox}
-							onPress={() => {
-								this.setState({ isLoading: true });
-								this.props.onLike();
-							}}>
-							<Image
-								style={[styles.actionButton, { tintColor: likeButtonColor }]}
-								source={assets.images.likeButton}
-							/>
-							<Text style={[styles.actionText, { color: likeButtonColor }]}>
-								{CONSTANTS.LIKE_TEXT}
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.actionBox}
-							onPress={() => this.download()}>
-							<Image
-								style={styles.actionButton}
-								source={assets.images.downloadButton}
-							/>
-							<Text style={styles.actionText}>{CONSTANTS.DOWNLOAD_TEXT}</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.actionBox}
-							onPress={() => this.share()}>
-							<Image
-								style={styles.actionButton}
-								source={assets.images.sendButton}
-							/>
-							<Text style={styles.actionText}>{CONSTANTS.SHARE_TEXT}</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.actionBox}
-							onPress={() => this.report()}>
-							<Image
-								style={styles.actionButton}
-								source={assets.images.reportButton}
-							/>
-							<Text style={styles.actionText}>{CONSTANTS.REPORT_TEXT}</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.actionBox}
-							onPress={() => this._changeBackgound()}>
-							<Image
-								style={styles.actionButton}
-								source={assets.images.backgroundButton}
-							/>
-							<Text style={styles.actionText}>{CONSTANTS.BACKGROUND_TEXT}</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.modalContainer}>
-						<Modal
-							transparent={true}
-							visible={this.state.reportModalVisibility}
-							onRequestClose={() => {
-								this.setState({ reportModalVisibility: false });
-								//alert('Modal has been closed.');
-							}}>
-							{this.renderModalContent()}
-						</Modal>
-					</View>
+							<Text style={this.state.sourceStyle}>{quoteData.source}</Text>
+						</View>
+						<Text style={styles.photoSource}>{sourcePhrase}</Text>
+					</ImageBackground>
 				</View>
+				<View style={styles.tagBar}>
+					<TouchableOpacity
+						style={{ borderRadius: 10, backgroundColor: getRandomColor() }}
+						onPress={() => this._visitSource()}>
+						<Text style={styles.barText}>{quoteData.source}</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={{ borderRadius: 10, backgroundColor: getRandomColor() }}
+						onPress={() => this._visitTopic()}>
+						<Text style={styles.barText}>{quoteData.topic}</Text>
+					</TouchableOpacity>
+				</View>
+
+				<View style={styles.actionBar}>
+					<TouchableOpacity
+						style={styles.actionBox}
+						onPress={() => {
+							this.setState({ isLoading: true });
+							this.props.onLike().then(()=>{
+								this.setState({ isLoading: false });
+							})
+						}}>
+						<Image
+							style={[styles.actionButton, { tintColor: likeButtonColor }]}
+							source={assets.images.likeButton}
+						/>
+						<Text style={[styles.actionText, { color: likeButtonColor }]}>
+							{CONSTANTS.LIKE_TEXT}
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.actionBox}
+						onPress={() => this.download()}>
+						<Image
+							style={styles.actionButton}
+							source={assets.images.downloadButton}
+						/>
+						<Text style={styles.actionText}>{CONSTANTS.DOWNLOAD_TEXT}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.actionBox}
+						onPress={() => this.share()}>
+						<Image
+							style={styles.actionButton}
+							source={assets.images.sendButton}
+						/>
+						<Text style={styles.actionText}>{CONSTANTS.SHARE_TEXT}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.actionBox}
+						onPress={() => this.report()}>
+						<Image
+							style={styles.actionButton}
+							source={assets.images.reportButton}
+						/>
+						<Text style={styles.actionText}>{CONSTANTS.REPORT_TEXT}</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.actionBox}
+						onPress={() => this._changeBackgound()}>
+						<Image
+							style={styles.actionButton}
+							source={assets.images.backgroundButton}
+						/>
+						<Text style={styles.actionText}>{CONSTANTS.BACKGROUND_TEXT}</Text>
+					</TouchableOpacity>
+				</View>
+				<View style={styles.modalContainer}>
+					<Modal
+						transparent={true}
+						visible={this.state.reportModalVisibility}
+						onRequestClose={() => {
+							this.setState({ reportModalVisibility: false });
+							//alert('Modal has been closed.');
+						}}>
+						{this.renderModalContent()}
+					</Modal>
+				</View>
+				{this.renderOverlay()}
 			</View>
 		);
 	}
@@ -500,7 +506,14 @@ const styles = StyleSheet.create({
 		borderColor: "#505050",
 		borderWidth: 1
 	},
-	overlay: {}
+	overlay: {
+		position: "absolute",
+		backgroundColor: "rgba(255,255,255,0.8)",
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0
+	}
 });
 
 export default Quote;
